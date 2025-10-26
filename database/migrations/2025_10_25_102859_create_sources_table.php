@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -20,6 +21,35 @@ return new class extends Migration
             $table->timestamp('last_fetched_at')->nullable();
             $table->timestamps();
         });
+
+        $sources = [
+            [
+                'name' => 'NewsAPI',
+                'slug' => 'newsapi',
+                'api_endpoint' => 'https://newsapi.org/v2',
+                'is_active' => true,
+            ],
+            [
+                'name' => 'The Guardian',
+                'slug' => 'guardian',
+                'api_endpoint' => 'https://content.guardianapis.com',
+                'is_active' => true,
+            ],
+            [
+                'name' => 'New York Times',
+                'slug' => 'nytimes',
+                'api_endpoint' => 'https://api.nytimes.com/svc',
+                'is_active' => true,
+            ],
+        ];
+
+        $timestamp = now();
+        foreach ($sources as &$source) {
+            $source['created_at'] = $timestamp;
+            $source['updated_at'] = $timestamp;
+        }
+
+        DB::table('sources')->insert($sources);
     }
 
     /**
